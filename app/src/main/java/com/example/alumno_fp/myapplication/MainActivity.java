@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -18,13 +20,16 @@ public class MainActivity extends AppCompatActivity {
     ListView myList;
     ArrayAdapter<String> myAdapter;
     ArrayList<String> places;
-    Button btnAdd;
+    Button btnAdd, btnDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         inicialize();
+
+        myList.setAdapter(myAdapter);
+        myAdapter.clear();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,21 +40,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 2){
             String message = data.getStringExtra("PLACE");
-            places.add(message);
-            myList.setAdapter(myAdapter);
+            if(! message.isEmpty()) {
+                places.add(message);
+                myAdapter.notifyDataSetChanged();
+            }
         }
     }
 
     private void inicialize(){
         myList = findViewById(R.id.list);
         places = new ArrayList<>();
-        myAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, places);
+        myAdapter = new ListAdapter(this, places);
         btnAdd = findViewById(R.id.btnAdd);
+        btnDelete = findViewById(R.id.btnDelete);
     }
 }
