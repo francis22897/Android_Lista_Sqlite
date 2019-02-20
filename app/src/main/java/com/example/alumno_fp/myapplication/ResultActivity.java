@@ -24,7 +24,7 @@ public class ResultActivity extends AppCompatActivity {
                 String place = text.getText().toString();
                 Intent intent = new Intent();
                 intent.putExtra("PLACE", place);
-                setResult(2, intent);
+                setResult(Utils.CODE_OK, intent);
                 finish();
             }
         });
