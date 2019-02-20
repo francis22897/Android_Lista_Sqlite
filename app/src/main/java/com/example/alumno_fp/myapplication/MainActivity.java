@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(Utils.CODE_OK == 2){
+        if(requestCode == Utils.CODE_OK){
             String message = data.getStringExtra("PLACE");
             if(! message.isEmpty()) {
                 places.add(message);
