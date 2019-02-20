@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
             if(! message.isEmpty()) {
                 places.add(message);
                 myAdapter.notifyDataSetChanged();
+            }else{
+                Toast.makeText(getApplicationContext(), getString(R.string.err_msg_empty_place), Toast.LENGTH_SHORT).show();
             }
         }
     }

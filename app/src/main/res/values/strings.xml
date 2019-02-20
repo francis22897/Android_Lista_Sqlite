@@ -4,4 +4,5 @@
     <string name="btnSend_text">Enviar</string>
     <string name="addbtn_Text">Añadir nuevo lugar</string>
     <string name="delete_btn_text">Borrar elemento</string>
+    <string name="err_msg_empty_place">No se pueden añadir lugares vacíos</string>
 </resources>
