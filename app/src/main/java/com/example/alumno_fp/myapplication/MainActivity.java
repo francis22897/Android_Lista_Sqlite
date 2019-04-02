@@ -1,6 +1,8 @@
 package com.example.alumno_fp.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,18 +20,17 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ListView myList;
-    ArrayAdapter<String> myAdapter;
-    ArrayList<String> places;
-    Button btnAdd, btnDelete;
+    ArrayAdapter<Place> myAdapter;
+    Places places;
+    Button btnAdd;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         inicialize();
-
         myList.setAdapter(myAdapter);
-        myAdapter.clear();
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,22 +46,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == Utils.CODE_OK){
+        if (requestCode == Utils.CODE_OK) {
             String message = data.getStringExtra("PLACE");
-            if(! message.isEmpty()) {
-                places.add(message);
-                myAdapter.notifyDataSetChanged();
-            }else{
+           if (!message.isEmpty()) {
+                    places.addPlace(new Place(message));
+
+                    SharedPreferences.Editor editor = prefs.edit();
+                    String json = places.toJson();
+                    editor.putString("places", json);
+                    editor.apply();
+
+                    myAdapter.notifyDataSetChanged();
+            } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.err_msg_empty_place), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void inicialize(){
+
+    private void inicialize() {
         myList = findViewById(R.id.list);
-        places = new ArrayList<>();
-        myAdapter = new ListAdapter(this, places);
         btnAdd = findViewById(R.id.btnAdd);
-        btnDelete = findViewById(R.id.btnDelete);
+        prefs = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+
+        String json = prefs.getString("places", "");
+
+        places = new Places();
+
+        if(! json.equals(""))
+            places = new Places(places.fromJSON(json).getPlacesList());
+
+
+        myAdapter = new ListAdapter(this, places.getPlacesList());
+
     }
 }

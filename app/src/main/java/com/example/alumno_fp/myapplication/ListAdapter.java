@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 
 
-public class ListAdapter extends ArrayAdapter<String> {
+public class ListAdapter extends ArrayAdapter<Place> {
     public ListAdapter(@NonNull Context context, @NonNull ArrayList objects) {
         super(context, 0, objects);
     }
@@ -25,18 +25,10 @@ public class ListAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(R.layout.place,parent, false);
         }
 
-        Button btnDelete = convertView.findViewById(R.id.btnDelete);
-
         TextView place = convertView.findViewById(R.id.place);
-        String item = getItem(position);
-        place.setText(item);
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                remove(getItem(position));
-                notifyDataSetChanged();
-            }
-        });
+        Place item = getItem(position);
+        place.setText(item.getPlace());
+
         return convertView;
     }
 
