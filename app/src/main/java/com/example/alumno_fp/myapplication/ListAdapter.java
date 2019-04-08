@@ -25,9 +25,14 @@ public class ListAdapter extends ArrayAdapter<Place> {
             convertView = inflater.inflate(R.layout.place,parent, false);
         }
 
-        TextView place = convertView.findViewById(R.id.place);
+        TextView id = convertView.findViewById(R.id.detail_id_text);
+        TextView place = convertView.findViewById(R.id.detail_place_text);
+        TextView comments = convertView.findViewById(R.id.detail_comments_text);
         Place item = getItem(position);
+
+        id.setText(item.getId());
         place.setText(item.getPlace());
+        comments.setText(item.getComments());
 
         return convertView;
     }

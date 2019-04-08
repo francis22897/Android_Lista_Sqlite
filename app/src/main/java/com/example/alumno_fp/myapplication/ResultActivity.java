@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class ResultActivity extends AppCompatActivity {
-    EditText text;
+    EditText name, comments;
     Button btnSend;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -21,9 +21,9 @@ public class ResultActivity extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String place = text.getText().toString();
                 Intent intent = new Intent();
-                intent.putExtra("PLACE", place);
+                intent.putExtra("NAME", name.getText().toString());
+                intent.putExtra("COMMENTS", comments.getText().toString());
                 setResult(Utils.CODE_OK, intent);
                 finish();
             }
@@ -31,7 +31,8 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void inicialize(){
-        text = findViewById(R.id.place_text);
+        name = findViewById(R.id.place_text);
+        comments = findViewById(R.id.comments_text);
         btnSend = findViewById(R.id.btnSend);
     }
 }

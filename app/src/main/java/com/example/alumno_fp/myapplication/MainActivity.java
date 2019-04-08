@@ -47,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Utils.CODE_OK) {
-            String message = data.getStringExtra("PLACE");
-           if (!message.isEmpty()) {
-                    places.addPlace(new Place(message));
+            String name = data.getStringExtra("NAME");
+            String comments = data.getStringExtra("COMMENTS");
+           if (!name.isEmpty() && !comments.isEmpty()) {
+                    places.addPlace(new Place(name, comments));
 
                     SharedPreferences.Editor editor = prefs.edit();
                     String json = places.toJson();
