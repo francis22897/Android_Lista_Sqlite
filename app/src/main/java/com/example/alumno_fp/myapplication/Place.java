@@ -1,24 +1,22 @@
 package com.example.alumno_fp.myapplication;
 
-import java.util.UUID;
-
 public class Place {
 
-    private String id;
+    private int id;
     private String place;
     private String comments;
 
-    public Place(String place, String comments) {
-        this.id = UUID.randomUUID().toString();
+    public Place(int id, String place, String comments) {
+        this.id = id;
         this.place = place;
         this.comments = comments;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

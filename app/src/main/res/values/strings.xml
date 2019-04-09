@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Datos Almacenados</string>
+    <string name="app_name">Lista SQLite</string>
     <string name="user_information_tv">Introduce un lugar que hayas visitado:</string>
     <string name="btnSend_text">Enviar</string>
     <string name="addbtn_Text">Añadir nuevo lugar</string>
