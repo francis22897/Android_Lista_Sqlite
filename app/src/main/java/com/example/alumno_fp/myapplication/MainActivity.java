@@ -29,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<Place> myAdapter;
     Places places;
     Button btnAdd;
-    PlacesSQLiteHelper pdbh;
-    protected SQLiteDatabase db;
+    UtilsDB db;
     int lastUpdatePosition;
 
     @Override
@@ -46,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
                 Place place = (Place) adapter.getItemAtPosition(position);
                 lastUpdatePosition = position;
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                intent.putExtra("ID", String.valueOf(place.getId()));
-                intent.putExtra("NEW_PLACE", place.getPlace());
-                intent.putExtra("NEW_COMMENTS", place.getComments());
+                intent.putExtra("DETAIL_ID", String.valueOf(place.getId()));
+                intent.putExtra("DETAIL_PLACE", place.getPlace());
+                intent.putExtra("DETAIL_COMMENTS", place.getComments());
                 startActivity(intent);
             }
         });
@@ -67,7 +66,12 @@ public class MainActivity extends AppCompatActivity {
             String place = intent.getStringExtra("PLACE");
             String comments = intent.getStringExtra("COMMENTS");
 
-            updateBD(id, place, comments, lastUpdatePosition);
+            if(db.updateDB(id,place, comments)){
+                Place nPlace = (Place) places.getPlacesList().get(lastUpdatePosition);
+                nPlace.setPlace(place);
+                nPlace.setComments(comments);
+                myAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -81,7 +85,16 @@ public class MainActivity extends AppCompatActivity {
             String comments = data.getStringExtra("COMMENTS");
            if (!name.isEmpty() && !comments.isEmpty()) {
 
-                insertDB(name, comments);
+                if(db.insertDB(name, comments)){
+                    int lastId = db.getLastId();
+
+                    if(lastId != -1) {
+                        places.addPlace(new Place(lastId, name, comments));
+                        myAdapter.notifyDataSetChanged();
+                    }
+                    else
+                        Log.e("INSERCION", "No se pudo obtener el id");
+                }
 
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.err_msg_empty_place), Toast.LENGTH_SHORT).show();
@@ -94,86 +107,13 @@ public class MainActivity extends AppCompatActivity {
         myList = findViewById(R.id.list);
         btnAdd = findViewById(R.id.btnAdd);
         places = new Places();
-        pdbh = new PlacesSQLiteHelper(this, "DBPlaces", null,1);
-        db = pdbh.getWritableDatabase();
-        readBD();
+
+        db = new UtilsDB(this);
+        places = db.readDB(places);
+
+        myAdapter = new ListAdapter(this, places.getPlacesList());
+        myList.setAdapter(myAdapter);
     }
 
-    private void insertDB(String name, String comments){
-        try{
-            ContentValues newRecord = new ContentValues();
-
-            newRecord.put("name", name);
-            newRecord.put("comments", comments);
-            db.insert("Places", null, newRecord);
-
-            int lastId = getLastId();
-
-            if(lastId != -1)
-                places.addPlace(new Place(lastId, name, comments));
-            else
-                throw new Exception("No se pudo obtener el id");
-
-            myAdapter.notifyDataSetChanged();
-
-        }catch (Exception ex){
-            Log.e("INSERCION", ex.getMessage());
-        }
-    }
-
-    private void readBD(){
-        try{
-
-            Cursor c = db.rawQuery("SELECT id, name, comments FROM Places", null);
-
-            if(c.moveToFirst()){
-                do{
-                    Place place = new Place(Integer.parseInt(c.getString(0)), c.getString(1), c.getString(2));
-                    places.addPlace(place);
-                }while(c.moveToNext());
-            }
-
-        }catch(Exception ex){
-            Log.e("LECTURA", ex.getMessage());
-        }
-
-        myAdapter = new ListAdapter(this, places.getPlacesList(), db);
-    }
-
-    private void updateBD(int id, String place, String comments, int position){
-        try{
-
-            ContentValues values = new ContentValues();
-            values.put("name", place);
-            values.put("comments", comments);
-            db.update("Places", values, "id=" + id, null);
-
-            Place nPlace = (Place) places.getPlacesList().get(position);
-            nPlace.setPlace(place);
-            nPlace.setComments(comments);
-            myAdapter.notifyDataSetChanged();
-
-        }catch (Exception ex){
-            Log.e("ACTUALIZADO", ex.getMessage());
-        }
-
-
-    }
-
-    private int getLastId(){
-        Cursor c = db.rawQuery("SELECT id FROM Places", null);
-
-        int id = -1;
-
-        if(c.moveToLast()){
-            try{
-                id = Integer.parseInt(c.getString(0));
-
-            }catch(Exception ex){
-
-            }
-        }
-        return id;
-    }
 
 }

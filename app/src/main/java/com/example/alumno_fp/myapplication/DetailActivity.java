@@ -24,9 +24,9 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if(intent.getExtras() != null){
-            id.setText(intent.getStringExtra("ID"));
-            place.setText(intent.getStringExtra("PLACE"));
-            comments.setText(intent.getStringExtra("COMMENTS"));
+            id.setText(intent.getStringExtra("DETAIL_ID"));
+            place.setText(intent.getStringExtra("DETAIL_PLACE"));
+            comments.setText(intent.getStringExtra("DETAIL_COMMENTS"));
         }
     }
 

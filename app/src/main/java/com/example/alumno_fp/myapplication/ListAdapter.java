@@ -17,11 +17,9 @@ import java.util.ArrayList;
 
 public class ListAdapter extends ArrayAdapter<Place> {
 
-    SQLiteDatabase db;
 
-    public ListAdapter(@NonNull Context context, @NonNull ArrayList objects, SQLiteDatabase db) {
+    public ListAdapter(@NonNull Context context, @NonNull ArrayList objects) {
         super(context, 0, objects);
-        this.db = db;
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
@@ -44,15 +42,11 @@ public class ListAdapter extends ArrayAdapter<Place> {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
-                    db.delete("Places", "id=" + getItem(position).getId() +"", null);
+                UtilsDB db = new UtilsDB(v.getContext());
+                if(db.deleteDB(getItem(position).getId())) {
                     remove(getItem(position));
                     notifyDataSetChanged();
-                }catch (Exception ex){
-                    Log.e("BORRADO", ex.getMessage());
                 }
-
-
             }
         });
 
